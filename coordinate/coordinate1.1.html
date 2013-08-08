@@ -1,0 +1,568 @@
+
+<html>
+    <head>
+        <title></title>
+         <link rel="stylesheet" type="text/css" href="jsxgraph.css">
+        <link type="text/css" rel="stylesheet" href="css/bootstrap.css">
+        <script src="jsxgraphcore.js" type="text/javascript"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+        <style>
+            /*#inner{
+               clear: both;
+            }
+            #paraDiv{
+               
+            }
+            #infoDiv{
+               float: left;
+               
+                margin-left: 175px;
+            }
+            #coordiDiv{
+                float:right;
+               
+                margin-right: 30px;
+            }
+            
+            #info{
+              }
+              #cover{
+                  margin-left: auto;
+                  margin-right: auto;
+                  height: 600px;
+                  width: 600px;
+              }*/ 
+              *{
+                padding:0px;
+                margin:0px;
+              }
+              body,html{
+                height:100%;
+                width:100%;
+              }
+
+             /* #cover{
+                  margin-left: auto;
+                  margin-right: auto;
+                  height: 500px;
+                 width: 1500px;}*/
+         /* #btnDiv{
+              float: left;
+          }*/
+          #info11,#info12,#info13,#info14,#info15,#info16,#info17,#info18,#coordi{
+              /*border: 2px transparent solid;*/
+              float: left;
+              /*margin-bottom: 5px;*/
+              height: 100%;
+              width:6.5%;
+              margin-right:1%;
+              background-color: #556677;
+              border-radius: 8px;
+          }
+          #info11{
+            margin-left: 1%;
+          }
+          #info15{
+            width:25%;
+          }
+          .info2{
+              display: block;
+              color: white;
+              font-size: large;
+              margin-top:11%;
+              cursor: pointer;
+            /* margin-top: 10px;
+             margin-left: 5px;
+              margin-right: 5px;*/
+              text-align: center;
+              
+              
+          }
+          .info3{
+              display: block;
+              color: white;
+              font-size: small;
+              text-align: center;
+
+              margin-top:1%;
+           /*  margin-top: 10px;
+             margin-left: 5px;
+              margin-right: 5px;*/
+          }
+          #myButton{
+              background-color: #556677;
+              
+          }
+          #numPoly{
+              /*border: 2px transparent solid;*/
+              /*margin-bottom: 5px;*/
+              height: 100%;
+              width:8%;
+              float:left;
+              margin-right: 1%;
+          }
+          #noOfPointsForPoly{
+              height: 100%;
+              /*margin-top: 5px;*/
+              width:100%;
+
+          }
+          #menuBar{
+            width:100%;
+            height:6%;
+          }
+
+
+        </style>
+    </head>
+    <body>
+     
+        <!-- <div class="span30">
+        <div class="row"> -->
+          <div id='menuBar'>
+        <a href= '../index.php'><div id="info11"> <p class="info2">Home</p></div></a>
+        <div id="info11"  onclick="drawPoint();"> <p class="info2">Point</p></div>
+        <div id="info12"  onclick="drawLine();"> <p class="info2">Line</p></div>
+        <div id="info13"  onclick="drawSegment();"> <p class="info2">Segment</p></div>
+        <div id="info14"  onclick="drawCircle();"> <p class="info2">Circle</p></div>
+        <div id="info15" > <p id="info" class="info3">this is info</p></div>
+        <div id="numPoly" ><input type="number" value=3 id="noOfPointsForPoly" ></div>
+         <div id="info16"  onclick="drawPolygon();"> <p class="info2">Polygon</p></div>
+          <div id="info17"  onclick="pointer();"> <p class="info2">Pointer</p></div>
+          <div id="info18"  onclick="board=clearAll(board)"> <p class="info2">Clear All</p></div>
+        </div>
+             <!-- </div> -->
+          
+        <div id="jxgbox" class="jxgbox"></div>
+        
+         
+       
+     <script>
+         var noOfPointsForPoly;
+         var pointClick=0;
+         var lineClick=0;
+         var mouseClick=0;
+         var polygonClick=0;
+         var segmentClick=0;
+         var circleClick=0;
+         var coverPoint;
+         var circleArray=[];
+         var lineArray=[];
+         var pointArray=[];
+         var polygonArray=[];
+         var segmentArray=[];
+         var polygonArrayCopy=[];
+         var polygonArrayCopyIndex=0;
+         var name1=[];
+         var  n=0;
+         var circleIndex=0;
+         var lineIndex=0;
+         var pointIndex=0;
+         var polygonIndex=0;
+         var segmentIndex=0;
+         var pointerClick=0;
+         
+        
+         var polygonPoint=new Array();
+         var p;
+         for(p=0;p<noOfPointsForPoly;p++)
+         polygonPoint[p]='D'+(++p);
+         
+       
+         var i=0;
+         var j=0;
+         var k=0;
+         var l=0; var d=0;var s=0;
+         
+       var board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox:[-20,10,10,-10], keepaspectratio: true, axis:true});
+           // var board = JXG.JSXGraph.initBoard('box', {boundingbox: [-5, 10, 15, -10],axis:true});
+          var getMouseCoords = function(e) {
+        var cPos = board.getCoordsTopLeftCorner(e),
+            absPos = JXG.getPosition(e),
+            dx = absPos[0]-cPos[0],
+            dy = absPos[1]-cPos[1];
+ 
+        return new JXG.Coords(JXG.COORDS_BY_SCREEN, [dx, dy], board);
+    };
+    
+    var up1=function(e){
+         var canCreate = true;
+    var coords=getMouseCoords(e);
+    var e1;
+     for (el in board.objects) {
+            if(JXG.isPoint(board.objects[el]) && board.objects[el].hasPoint(coords.scrCoords[1], coords.scrCoords[2])) {
+                canCreate = false;
+                break;
+            }
+                            }
+                            //funcion to draw poijnts
+        if(canCreate && pointClick===1){
+  pointArray[pointIndex++]=board.create('point',[coords.usrCoords[1],coords.usrCoords[2]],{size:4});
+  addMyListener();
+  //coverPoint=board.create('point',[function(){ return free.X();},function(){ return free.Y();}],{name:'',size:15,fillColor:'blue',fillOpacity:0.3,visible:true,strokeColor:'',strokeColorOpacity:0.3});
+        }     
+        
+        //for drawing lines
+        if(canCreate && lineClick===1 && i<2){
+            
+            pointArray[pointIndex++]=board.create('point',[coords.usrCoords[1],coords.usrCoords[2]],{size:4});
+             addMyListener();
+            i++;
+            //to empty point array when clicked outside
+                n=0;
+                name1[0]="";
+                name1[1]="";
+  if(i===2){
+      board.create('line',[pointArray[pointIndex-2],pointArray[pointIndex-1]]);
+      i=0;
+      //addMyListener();
+  }
+            }  
+            
+            //for drawing segments
+            
+            if(canCreate && segmentClick===1){
+            
+           pointArray[pointIndex++]=board.create('point',[coords.usrCoords[1],coords.usrCoords[2]],{size:4});
+            addMyListener();
+           //n=0;
+            j++;
+            //to empty point array when clicked outside
+                n=0;
+                name1[0]="";
+                name1[1]="";
+  if(j===2){
+      board.create('line',[pointArray[pointIndex-1],pointArray[pointIndex-2]],{straightFirst:false,straightLast:false});
+      j=0;
+     
+      
+        //n=0;
+  }
+            }
+            
+            
+            
+            //for drawing circle
+            if(canCreate && circleClick===1 && k<2){
+            
+           pointArray[pointIndex++]=board.create('point',[coords.usrCoords[1],coords.usrCoords[2]],{size:4});
+            addMyListener();
+            k++;
+            //to empty point array when clicked outside
+                n=0;
+                name1[0]="";
+                name1[1]="";
+  if(k===2){
+      board.create('circle',[pointArray[pointIndex-2],pointArray[pointIndex-1]],{fillColor:'#ffff00', fillOpacity:0.3});
+      k=0;
+     // addMyListener();
+      
+            }
+           // var gr = b1.create('group',);
+                                                    }
+            
+            //for drawing polygon
+              noOfPointsForPoly=document.getElementById("noOfPointsForPoly").value;
+             if(canCreate && polygonClick===1 && l<noOfPointsForPoly){
+            
+            polygonArray[polygonIndex++]=board.create('point',[coords.usrCoords[1],coords.usrCoords[2]],{hasInnerPoints:true,size:4});
+            polygonArrayCopy[polygonArrayCopyIndex++]=polygonArray[polygonIndex-1];
+            l++;
+           // alert(polygonArray[polygonIndex-1].name);
+             addMyListener();
+             //to empty point array when clicked outside
+                n=0;
+                name1[0]="";
+                name1[1]="";
+            //alert("l="+l);
+  if(l==noOfPointsForPoly){
+     // alert("input="+noOfPointsForPoly);
+      //polygonArray[polygonIndex]=polygonArray[0];
+    var poly=board.create('polygon',polygonArray);
+    polygonArray=[];
+    polygonIndex=0;
+      l=0;
+  }
+            }
+        
+                                       /* free.on('drag',function(){
+                                            free.setAttribute({
+                                                fillColor:'blue'
+                                            });
+   
+                                    }); */
+                                        
+ 
+       };//end of up1
+       
+       function addMyListener(){
+      
+       //n=0;
+    for(;d<pointIndex;d++){
+      //  alert(pointIndex);
+    pointArray[d].on('down',function(){
+      // board.on('up',up1);
+      
+      //for segment
+     if(segmentClick==1){
+         
+      name1[n]=this.name;
+      n=n+1;
+      //document.getElementById("info").innerHTML=n;
+      // document.getElementById("area").innerHTML="0=> "+name1[0]+" 1=> "+name1[1];
+     if(n==2){
+        //  document.getElementById("coordi").innerHTML=n;
+          board.create('segment',[name1[0],name1[1]]);
+          n=0;
+       // document.getElementById("coordi").innerHTML=n;
+          name1[0]="";
+          name1[1]="";
+          // document.getElementById("area").innerHTML=name1[0]+" "+name1[1];
+         
+               }
+                        }
+                        
+         //for line               
+          if(lineClick==1){
+      name1[n]=this.name;
+      n=n+1;
+      //document.getElementById("info").innerHTML=n;
+      // document.getElementById("area").innerHTML="0=> "+name1[0]+" 1=> "+name1[1];
+     if(n==2){
+         // document.getElementById("coordi").innerHTML=n;
+          board.create('line',[name1[0],name1[1]]);
+          n=0;
+       // document.getElementById("coordi").innerHTML=n;
+          name1[0]="";
+          name1[1]="";
+           //document.getElementById("area").innerHTML=name1[0]+" "+name1[1];
+         
+               }
+                        }   
+                        
+          //for circle
+          if(circleClick==1){
+      name1[n]=this.name;
+      n=n+1;
+      //document.getElementById("info").innerHTML=n;
+     //  document.getElementById("area").innerHTML="0=> "+name1[0]+" 1=> "+name1[1];
+     if(n==2 && pointerClick === 0){
+          //document.getElementById("coordi").innerHTML=n;
+          board.create('circle',[name1[0],name1[1]],{fillColor:'#ffff00',fillOpacity:0.3});
+          n=0;
+       // document.getElementById("coordi").innerHTML=n;
+          name1[0]="";
+          name1[1]="";
+          // document.getElementById("area").innerHTML=name1[0]+" "+name1[1];
+         
+               }
+                        }  
+       //alert(name1[n-1]);
+       //for polygon
+       if(polygonClick==1){
+      name1[n]=this.name;
+      n=n+1;
+      //document.getElementById("info").innerHTML=n;
+      // document.getElementById("area").innerHTML="0=> "+name1[0]+" 1=> "+name1[1];
+     if(n==noOfPointsForPoly){
+         // document.getElementById("coordi").innerHTML=n;
+          board.create('polygon',name1);
+          n=0;
+       // document.getElementById("coordi").innerHTML=n;
+          name1[0]="";
+          name1[1]="";
+         //  document.getElementById("area").innerHTML=name1[0]+" "+name1[1];
+         
+               }
+                        }  
+     
+    });
+    }
+
+ for(;s<polygonArrayCopyIndex;s++){
+    polygonArrayCopy[s].on('down',function(){
+      // board.on('up',up1);
+      name1[n++]=this.name;
+     if(n===2 && pointerClick === 0){
+          board.create('segment',[name1[0],name1[1]]);
+          n=0;
+          name1=[];
+         
+     }
+       //alert(name1[n-1]);
+     
+    });}
+      }
+
+        
+    // board.create('point',[1,1],{name:'X',size:3});
+    //to draw line    
+    function drawLine(){
+                     //n=0;
+                      changeColorToBlue();
+               pointClick=0;
+               segmentClick=0;
+               circleClick=0;
+               polygonClick=0;  pointerClick=0;   
+              if(lineClick===0){
+                   lineClick=1;
+                   document.getElementById("info12").style.backgroundColor='#AA3333';
+               }
+               else{
+                 document.getElementById("info11").style.backgroundColor='#556677';
+                 lineClick=0;
+               }
+               //var A = board.create('point', [-1,-1],{name:'A'});
+               if(lineClick===1){
+                   document.getElementById("info").innerHTML="select two new points or Click on any two points.";
+                board.on('down',up1);
+               }
+               
+           }
+           
+           //to draw points
+  function drawPoint(){
+     // n=0;
+  // var myId=pointId;
+      changeColorToBlue();
+      segmentClick=0;
+      lineClick=0;
+      circleClick=0;
+      polygonClick=0;  pointerClick=0;   
+              if(pointClick===0){
+                   pointClick=1;
+                     document.getElementById("info11").style.backgroundColor='#AA3333';
+               }
+               else{
+                 document.getElementById("info11").style.backgroundColor='#556677';
+                 
+            pointClick=0;
+             
+               }
+               //var A = board.create('point', [-1,-1],{name:'A'});
+               if(pointClick===1){
+                    document.getElementById("info").innerHTML="Click on board to create a point.";
+                board.on('down',up1);
+               }
+               
+           }
+  
+  //to draw segment
+   function drawSegment(){
+               // n=0; 
+              changeColorToBlue();
+               pointClick=0;
+               lineClick=0;
+               circleClick=0;
+               polygonClick=0;  pointerClick=0;   
+              if(segmentClick===0){
+                   segmentClick=1;
+                   document.getElementById("info13").style.backgroundColor='#AA3333';
+               }
+               else{
+                    document.getElementById("info11").style.backgroundColor='#556677';
+               
+                   segmentClick=0;}
+               //var A = board.create('point', [-1,-1],{name:'A'});
+               if(segmentClick===1){
+                    document.getElementById("info").innerHTML="select two new points or Click on any two points.";
+                   addMyListener();
+                board.on('down',up1);
+               }
+               
+           }
+           
+           //to draw circle
+            function drawCircle(){
+              //  n=0;
+               changeColorToBlue();
+               pointClick=0;
+               lineClick=0;
+               segmentClick=0;
+               polygonClick=0;  pointerClick=0;   
+              if(circleClick===0){
+                   circleClick=1;
+                   document.getElementById("info14").style.backgroundColor='#AA3333';
+               }
+               else{
+                    document.getElementById("info11").style.backgroundColor='#556677';
+               
+                   circleClick=0;}
+               //var A = board.create('point', [-1,-1],{name:'A'});
+               if(circleClick===1){
+                   document.getElementById("info").innerHTML="select or Click on board to choose center and point on circumference.";
+                board.on('down',up1);
+               }
+               
+           }
+           function drawPolygon(){
+            //   n=0;
+             changeColorToBlue();
+               pointClick=0;
+               lineClick=0;
+               segmentClick=0;
+               circleClick=0;  pointerClick=0;   
+              if(polygonClick===0){
+                   polygonClick=1;
+                   document.getElementById("info16").style.backgroundColor='#AA3333';
+               }
+               else{
+                   document.getElementById("info11").style.backgroundColor='#556677';
+                   polygonClick=0;}
+               //var A = board.create('point', [-1,-1],{name:'A'});
+               if(polygonClick===1){
+                   document.getElementById("info").innerHTML="select or Click on board to choose points of polygon.";
+                 
+                board.on('down',up1);
+               }
+               
+           }
+           function pointer(){
+                document.getElementById("info").innerHTML="Drag elements to move them.";
+                
+                changeColorToBlue();
+               pointClick=0;
+               lineClick=0;
+               segmentClick=0;
+                circleClick=0;
+                polygonClick=0;
+                if(pointerClick==0){
+                pointerClick=1;
+                 document.getElementById("info17").style.backgroundColor='#AA3333';
+                }
+                else{
+                 pointerClick=0;   
+                  document.getElementById("info17").style.backgroundColor='#556677';
+                }
+                
+               // n=0;
+             
+               
+                              }
+                              function changeColorToBlue()
+                              {
+                                    document.getElementById("info11").style.backgroundColor='#556677';
+                                      document.getElementById("info12").style.backgroundColor='#556677';
+                                        document.getElementById("info13").style.backgroundColor='#556677';
+                                          document.getElementById("info14").style.backgroundColor='#556677';
+                                            document.getElementById("info16").style.backgroundColor='#556677';
+                                              document.getElementById("info17").style.backgroundColor='#556677';
+                              }
+                              function clearAll(board) {
+                                  changeColorToBlue();
+                                   pointClick=0;
+               lineClick=0;
+               segmentClick=0;
+                circleClick=0;
+                polygonClick=0;
+                 pointerClick=0;
+    JXG.JSXGraph.freeBoard(board);
+      board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox:[-20,10,10,-10], keepaspectratio: true, axis:true});
+    //board = JXG.JSXGraph.initBoard('box', {boundingbox:[-5,8,8,-5], axis:true});
+  //  p = board.create('point', [3,-4], {style:6, name:'p'}); 
+    return board;
+}
+        </script>
+    </body>
+</html>

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Generic Graph Subject Model</title>
+		<link href="css/graphSubject.css" rel="stylesheet"/>
+		<script src="js/kinetic-v4.4.1.js" type="text/javascript"></script>
+		<script src="js/graphSubject.js" type="text/javascript"></script>
+	</head>
+	<body onload="onBodyLoad">
+		<div id='container'></div>
+		
+	</body>
+</html>

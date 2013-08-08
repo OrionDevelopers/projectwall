@@ -1,0 +1,58 @@
+*{
+	margin:0px;
+	padding:0px;
+}
+body,html{
+	height:100%;
+	width:100%;
+	background-color: gray;
+}
+#container{
+	margin-top:1%;
+	width:90%;
+	height:85%;
+	margin-left:auto;
+	margin-right:auto;
+	background-color:white;
+}
+#menuContainer{
+	width:100%;
+	height:10%;
+	
+}
+#menu{
+	display:block;
+	/*float:left;*/
+	width:85%;
+	height:100%;
+	
+}
+#runDiv{
+	display: block;
+	float:right;
+	width:15%;
+	height:100%;
+	
+}
+#runDiv .myButton{
+	float:left;
+	width:45%;
+	height:100%;
+	margin:0px;
+	margin-left:5px;
+}
+.myButton{
+	width:19.5%;
+	margin-top:3px;
+	font-size: large;
+}
+#keyBoardLayer{
+	position:absolute;
+	height:100%;
+	width:100%;
+	opacity: 0.7;
+	left:0px;
+	top:0px;
+	background-color: black;
+}
+

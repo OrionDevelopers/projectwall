@@ -1,0 +1,55 @@
+var containerReference,containerHeight,containerWidth,stage,slideLayer,drawingLayer;
+var isPenToolSelected = false, isRectToolSelected = false,isfilledRectToolSelected = false, isHighlightToolSelected = false;
+
+
+function init(){   //initialisation
+	containerReference = document.getElementById("container");
+	containerHeight = containerReference.offsetHeight;
+	containerWidth = containerReference.offsetWidth;
+	stage = new Kinetic.Stage({
+		container: 'container',
+		height: containerHeight,
+		width: containerWidth
+	});
+	slideLayer = new Kinetic.Layer();
+	drawingLayer = new Kinetic.Layer();
+	drawingLayer.on('click',drawingLayerClicked);
+	stage.add(slideLayer);
+	stage.add(drawingLayer);
+	setBackgroundSlide();
+	setDrawingSheet('transparent');
+}
+function setBackgroundSlide(){
+	var imgObj = new Image();
+	imgObj.src = 'sampleSlide.PNG';
+	var slideImg = new Kinetic.Image({
+		x:0,
+		y:0,
+		height:containerHeight,
+		width:containerWidth,
+		image:imgObj
+	});
+	slideLayer.add(slideImg);
+	slideLayer.draw();
+	//var ctx = stage.getContext('2d');
+	//slideLayer.draw();
+}
+function setDrawingSheet(fillStyle){
+	var sheet = new Kinetic.Rect({
+		x:0,
+		y:0,
+		height:containerHeight,
+		width:containerWidth,
+		fill:'red'
+		//fill:'transparent'
+	});
+	ctx = drawingLayer.getContext();
+	drawingLayer.add(sheet);
+	drawingLayer.draw();
+	ctx.clearRect(20,30,400,500);
+	//drawingLayer.draw();
+	
+}
+function drawingLayerClicked(){
+	window.alert("hello there");
+}

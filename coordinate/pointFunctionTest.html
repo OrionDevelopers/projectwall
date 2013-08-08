@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="jsxgraph.css">
+        <script src="jsxgraphcore.js" type="text/javascript"></script>
+       
+    </head>
+    <body>
+        <div id="box" class="jxgbox" style="width:500px; height:500px;"></div>
+       
+     <script>
+          var board = JXG.JSXGraph.initBoard('box', {boundingbox: [-5, 10, 15, -10],axis:true});
+           var free=board.create('point',[3,3],{size:2});
+            var free1=board.create('point',[8,8],{size:15,showInfobox:false,highlight:false});
+    // var coverPoint=board.create('point',[function(){ return free.X();},function(){ return free.Y();}],{name:'',size:15,fillColor:'blue',fillOpacity:0.3,fixed:false,visible:true,strokeColor:'',strokeColorOpacity:0.3});       
+    //var coverPoint=board.create('point',[3,3],{name:'',size:15,fillColor:'blue',fillOpacity:0.3,fixed:false,visible:true,strokeColor:'',strokeColorOpacity:0.3,highlight:false});
+    var group=board.create('group',[free,coverPoint]);    
+    // board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox: [-5,5,5,-5], axis: true});
+ var getMouseCoords = function(e) {
+        var cPos = board.getCoordsTopLeftCorner(e),
+            absPos = JXG.getPosition(e),
+            dx = absPos[0]-cPos[0],
+            dy = absPos[1]-cPos[1];
+ 
+        return new JXG.Coords(JXG.COORDS_BY_SCREEN, [dx, dy], board);
+    };
+        /* coverPoint.on('mousedown',function(){
+             coverPoint.setAttribute({
+               //size:10,
+               //fillColor:'blue',
+              // fillOpacity:0.3
+              fillOpacity:0.3,
+               //highlight:true
+               
+                                     });
+                                             });
+                  coverPoint.on('mouseup',function(){
+             coverPoint.setAttribute({
+               //size:10,
+               //fillColor:'blue',
+             fillOpacity:0
+              //fillOpacity:0.3,
+               //highlight:true
+               
+                                     });
+                                             });
+          coverPoint.on('over',function(){
+             coverPoint.setAttribute({
+               //size:10,
+               //fillColor:'blue',
+               
+              fillOpacity:0.3
+               
+                                });
+                                });
+         
+        /*  coverPoint.on('mousedown',function(){
+             coverPoint.setAttribute({
+               //size:10,
+               //fillColor:'blue',
+               //fillOpacity:0.3
+             // fillOpacity:0.3
+               
+             });
+                                    });
+             coverPoint.on('drag',function(){
+             coverPoint.setAttribute({
+               //size:10,
+               //fillColor:'blue',
+               //fillOpacity:0.3
+             // fillOpacity:0.8
+             highlight:false
+               
+             });
+                                    });*/
+                                     free1.on('down',function(){
+             free1.setAttribute({
+               //size:10,
+               //fillColor:'blue',
+               //fillOpacity:0.3
+              fillOpacity:0.3
+               
+             });
+                                    });
+                                    free1.on('over',function(){
+             free1.setAttribute({
+               //size:10,
+               //fillColor:'blue',
+               //fillOpacity:0.3
+              fillOpacity:0.3
+               
+             });
+                                    });
+                                     
+                                  
+                                  
+        </script>
+    </body>
+</html>

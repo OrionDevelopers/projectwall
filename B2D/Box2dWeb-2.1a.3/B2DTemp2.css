@@ -1,0 +1,59 @@
+*{
+	padding: 0px;
+	margin: 0px;
+}
+body,html{
+	width:100%;
+	height:100%;
+}
+#canvas{
+	display:block;
+	margin-left:auto;
+	margin-right: auto;
+	
+}
+#container{
+	padding-top:15px;
+	
+}
+select{
+	width:40%;
+}
+button{
+	width:60%;
+
+}
+#optionContainer{
+	margin-top:1%;
+	width:100%;
+	height:20%;
+	
+}
+.optionWrapper{
+	display:block;
+	margin:0px;
+	height:32%;
+	
+}
+.option{
+	width:16.5%;
+	height:100%;
+	float:left;
+	text-align: right;
+
+	font-weight: bold;
+	/*font-size: 17px;*/
+	
+}
+#gravityOption{
+	text-align: center;
+	font-weight: bold;
+	position:absolute;
+	color:red;
+	/*font-size: 16px;*/
+	
+	
+}
+#gravityOption select{
+	width:100px;
+}

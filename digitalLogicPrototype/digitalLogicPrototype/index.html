@@ -1,0 +1,80 @@
+<!DOCTYPE  html>
+<html>
+	<head>
+		<title>Digital Logic Prototype</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+		<link href="css/index.css" rel="stylesheet">
+		<script src="js/kinetic-v4.4.1.js"></script>
+		<script src="js/index.js"></script> 
+	</head>
+	<body onload="onBodyLoad();">
+		<div id='menuContainer'>
+		<div id='runDiv'>
+		    <button id='run' class='myButton btn btn-large btn-danger' onclick="fillOutputPanel();">Run</button>
+		    <a href='../../index.php'><button id='homeButton' class='myButton btn btn-large btn-danger'>Home</button></a>
+		</div>
+		<div id='menu'>
+			<button id='AND_gate' class='myButton btn btn-primary' onclick="createGate('AND');">AND</button>
+			<button id='NAND_gate' class='myButton btn btn-primary' onclick="createGate('NAND');">NAND</button>
+			<button id='OR_gate' class='myButton btn btn-primary' onclick="createGate('OR');">OR</button>
+			<button id='NOR_gate' class=' myButton btn btn-primary' onclick="createGate('NOR');">NOR</button>
+			<button id='XOR_gate' class='myButton btn btn-primary' onclick="createGate('XOR');">XOR</button>
+			<button id='XNOR_gate' class='myButton btn btn-primary' onclick="createGate('XNOR');">XNOR</button>
+			<button id='NOT_gate' class='myButton btn btn-primary' onclick="createGate('NOT');">NOT</button>
+			<button id='inputSourceOne' class='myButton btn btn-primary' onclick="createInputSource(1);">Input 1</button>
+			<button id='inputSourceZero' class='myButton btn btn-primary' onclick="createInputSource(0);">Input 0</button>
+			<button id='outputPanel' class='myButton btn btn-primary' onclick="createOutputPanel();">Output</button>
+		</div>
+		
+		</div>
+		<div id='container'></div>
+		<!-- <div id='keyBoardLayer'></div>
+		<div id='keyboardDiv'>
+			<div id='row1'>
+				<button>Q</button>
+				<button>W</button>
+				<button>E</button>
+				<button>R</button>
+				<button>T</button>
+				<button>Y</button>
+				<button>U</button>
+				<button>I</button>
+				<button>O</button>
+				<button>P</button>
+			</div>
+			<div id='row2'>
+				<button>A</button>
+				<button>S</button>
+				<button>D</button>
+				<button>F</button>
+				<button>G</button>
+				<button>H</button>
+				<button>J</button>
+				<button>K</button>
+				<button>L</button>
+			</div>
+			<div id='row3'>
+				<button>Z</button>
+				<button>X</button>
+				<button>C</button>
+				<button>V</button>
+				<button>B</button>
+				<button>N</button>
+				<button>M</button>
+			</div>
+			<div id='row4'>
+				<button>0</button>
+				<button>1</button>
+				<button>2</button>
+				<button>3</button>
+				<button>4</button>
+				<button>5</button>
+				<button>6</button>
+				<button>7</button>
+				<button>8</button>
+				<button>9</button>
+			</div> -->
+		</div>
+		
+	</body>
+</html>

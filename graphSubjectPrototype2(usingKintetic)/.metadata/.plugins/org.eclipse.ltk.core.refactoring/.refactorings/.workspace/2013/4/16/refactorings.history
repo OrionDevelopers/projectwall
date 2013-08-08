@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;graphSubjectPrototype2/graphSubject.js&apos;" deleteContents="false" description="Delete resource &apos;graphSubjectPrototype2/graphSubject.js&apos;" element1="/graphSubjectPrototype2/graphSubject.js" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1366274318111"/>
+</session>

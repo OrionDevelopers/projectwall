@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="jsxgraph.css">
+        <script src="jsxgraphcore.js" type="text/javascript"></script>
+       
+    </head>
+    <body>
+        <div id="box" class="jxgbox" style="width:500px; height:500px;"></div>
+       
+     <script>
+          var board = JXG.JSXGraph.initBoard('box', {boundingbox: [-5, 10, 15, -10],axis:true});
+         var p=[];
+         p[0]=board.create('point',[1,1]);
+         p[1]=board.create('point',[2,2]);
+         p[2]=board.create('point',[1,2]);
+         var poly=board.create('polygon',p);
+        </script>
+    </body>
+</html>

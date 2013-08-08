@@ -1,0 +1,233 @@
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="jsxgraph.css">
+        <script src="jsxgraphcore.js" type="text/javascript"></script>
+       
+    </head>
+    <body>
+        <div id="box" class="jxgbox" style="width:500px; height:500px;"></div>
+        <input type="button" value="point" onclick="drawPoint();">
+        <input type="button" value="line" onclick="drawLine();">
+          <input type="button" value="segment" onclick="drawSegment();">
+        <input type="button" value="circle" onclick="drawCircle();">
+        <input type="number" value=3 id="noOfPointsForPoly">
+         <input type="button" value="polygon" onclick="drawPolygon();">
+         <input type="button" value="pointer" onclick="pointer();">
+        
+     <script>
+         var noOfPointsForPoly;
+         var pointClick=0;
+         var lineClick=0;
+         var mouseClick=0;
+         var polygonClick=0;
+         var segmentClick=0;
+         var circleClick=0;
+         var coverPoint;
+         var circleArray=[];
+         var lineArray=[];
+         var pointArray=[];
+         var polygonArray=[];
+         var segmentArray=[];
+         var circleIndex=0;
+         var lineIndex=0;
+         var pointIndex=0;
+         var polygonIndex=0;
+         var segmentIndex=0;
+        
+         var polygonPoint=new Array();
+         var p;
+         for(p=0;p<noOfPointsForPoly;p++)
+         polygonPoint[p]='D'+(++p);
+         
+       
+         var i=0;
+         var j=0;
+         var k=0;
+         var l=0;
+         
+       
+            var board = JXG.JSXGraph.initBoard('box', {boundingbox: [-5, 10, 15, -10],axis:true});
+          var getMouseCoords = function(e) {
+        var cPos = board.getCoordsTopLeftCorner(e),
+            absPos = JXG.getPosition(e),
+            dx = absPos[0]-cPos[0],
+            dy = absPos[1]-cPos[1];
+ 
+        return new JXG.Coords(JXG.COORDS_BY_SCREEN, [dx, dy], board);
+    };
+    
+    var up1=function(e){
+         var canCreate = true;
+    var coords=getMouseCoords(e);
+    var e1;
+     for (el in board.objects) {
+            if(JXG.isPoint(board.objects[el]) && board.objects[el].hasPoint(coords.scrCoords[1], coords.scrCoords[2])) {
+                canCreate = false;
+                break;
+            }
+                            }
+                            //funcion to draw poijnts
+        if(canCreate && pointClick===1){
+  pointArray[pointIndex++]=board.create('point',[coords.usrCoords[1],coords.usrCoords[2]],{size:2});
+  //coverPoint=board.create('point',[function(){ return free.X();},function(){ return free.Y();}],{name:'',size:15,fillColor:'blue',fillOpacity:0.3,visible:true,strokeColor:'',strokeColorOpacity:0.3});
+        }     
+        
+        //for drawing lines
+        if(canCreate && lineClick===1 && i<2){
+            
+            lineArray[lineIndex++]=board.create('point',[coords.usrCoords[1],coords.usrCoords[2]],{sixe:2});
+            i++;
+  if(i===2){
+      board.create('line',[lineArray[lineIndex-2],lineArray[lineIndex-1]]);
+      i=0;
+  }
+            }  
+            
+            //for drawing segments
+            
+            if(canCreate && segmentClick===1 && j<2){
+            
+            segmentArray[segmentIndex++]=board.create('point',[coords.usrCoords[1],coords.usrCoords[2]],{sixe:2});
+            j++;
+  if(j===2){
+      board.create('line',[segmentArray[segmentIndex-2],segmentArray[segmentIndex-1]],{straightFirst:false,straightLast:false});
+      j=0;
+  }
+            }
+            
+            //for drawing circle
+            if(canCreate && circleClick===1 && k<2){
+            
+            circleArray[circleIndex++]=board.create('point',[coords.usrCoords[1],coords.usrCoords[2]],{sixe:2});
+            k++;
+  if(k===2){
+      board.create('circle',[circleArray[circleIndex-2],circleArray[circleIndex-1]],{fillColor:'#ffff00', fillOpacity:0.3});
+      k=0;
+            }
+           // var gr = b1.create('group',);
+                                                    }
+            
+            //for drawing polygon
+              noOfPointsForPoly=document.getElementById("noOfPointsForPoly").value;
+             if(canCreate && polygonClick===1 && l<noOfPointsForPoly){
+            
+            polygonArray[polygonIndex++]=board.create('point',[coords.usrCoords[1],coords.usrCoords[2]],{size:2,hasInnerPoints:true});
+            l++;
+            //alert("l="+l);
+  if(l==noOfPointsForPoly){
+     // alert("input="+noOfPointsForPoly);
+      //polygonArray[polygonIndex]=polygonArray[0];
+    var poly=board.create('polygon',polygonArray);
+    polygonArray=[];
+    polygonIndex=0;
+      l=0;
+  }
+            }
+        
+                                       /* free.on('drag',function(){
+                                            free.setAttribute({
+                                                fillColor:'blue'
+                                            });
+   
+                                    }); */
+                                        
+ 
+       };
+        
+    // board.create('point',[1,1],{name:'X',size:3});
+    //to draw line    
+    function drawLine(){
+               pointClick=0;
+               segmentClick=0;
+               circleClick=0;
+              if(lineClick===0){
+                   lineClick=1;
+               }
+               else
+                   lineClick=0;
+               //var A = board.create('point', [-1,-1],{name:'A'});
+               if(lineClick===1){
+                board.on('up',up1);
+               }
+               
+           }
+           
+           //to draw points
+  function drawPoint(){
+      segmentClick=0;
+      lineClick=0;
+      circleClick=0;
+              if(pointClick===0){
+                   pointClick=1;
+               }
+               else
+                   pointClick=0;
+               //var A = board.create('point', [-1,-1],{name:'A'});
+               if(pointClick===1){
+                board.on('up',up1);
+               }
+               
+           }
+  
+  //to draw segment
+   function drawSegment(){
+               pointClick=0;
+               lineClick=0;
+               circleClick=0;
+              if(segmentClick===0){
+                   segmentClick=1;
+               }
+               else
+                   segmentClick=0;
+               //var A = board.create('point', [-1,-1],{name:'A'});
+               if(segmentClick===1){
+                board.on('up',up1);
+               }
+               
+           }
+           
+           //to draw circle
+            function drawCircle(){
+               pointClick=0;
+               lineClick=0;
+               segmentClick=0
+              if(circleClick===0){
+                   circleClick=1;
+               }
+               else
+                   circleClick=0;
+               //var A = board.create('point', [-1,-1],{name:'A'});
+               if(circleClick===1){
+                board.on('up',up1);
+               }
+               
+           }
+           function drawPolygon(){
+               pointClick=0;
+               lineClick=0;
+               segmentClick=0
+              if(polygonClick===0){
+                   polygonClick=1;
+               }
+               else
+                   polygonClick=0;
+               //var A = board.create('point', [-1,-1],{name:'A'});
+               if(polygonClick===1){
+                 
+                board.on('up',up1);
+               }
+               
+           }
+           function pointer(){
+               pointClick=0;
+               lineClick=0;
+               segmentClick=0
+                circleClick=0;
+                polygonClick=0;
+             
+               
+                              }
+        </script>
+    </body>
+</html>

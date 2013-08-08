@@ -1,0 +1,82 @@
+var canvas, context, helperCanvas, helperContext;
+var isButtonDown = false;
+var isPenToolSelected = true;     // by default penTool is selected
+var isRectangleToolSelected = false;
+var rectOrigin_X, rectOrigin_Y, rectWidth, rectHeight, rectToDraw = false;
+window.addEventListener('load', function() {
+	canvas = document.getElementById("myCanvas");
+	context = canvas.getContext('2d');
+	
+	// draw the slide image first;
+	//drawSlideImage();
+	helperCanvas = document.getElementById("helperCanvas");
+	helperContext = helperCanvas.getContext('2d');
+	context.strokeStyle = "black";
+	helperContext.strokeStyle = "black";
+	canvas.addEventListener('mousemove', mouseMoved, false);
+	canvas.addEventListener('mouseup', mouseUp, false);
+	canvas.addEventListener('mousedown', mouseDown, false);
+	canvas.addEventListener('mouseout', mouseLeave, false);
+	helperCanvas.addEventListener('mouseup', helperCanvasMouseUp, false);
+	helperCanvas.addEventListener('mousemove', helperCanvasMouseMove, false);
+	document.getElementById("penToolButton").addEventListener('click',function(){isPenToolSelected = true; isRectangleToolSelected = false;},false);
+	document.getElementById("rectToolButton").addEventListener('click',function(){isPenToolSelected = false; isRectangleToolSelected = true;},false);
+	document.getElementById("saveButton").addEventListener('click',saveCanvas,false);
+}, false);
+
+function drawSlideImage(){         // not to be used. Very slow to draw heavy images.....(using background images instead)
+	var img = new Image();
+	img.src="sampleSlide.PNG";
+	context.drawImage(img,0,0,canvas.width,canvas.height);
+}
+function saveCanvas(e){
+	//document.location.href = canvas.toDataURL('image/png');
+	//Canvas2Image.saveAsPNG(canvas);
+	alert("Cannot save image right now. Function removed by Sumit.");
+}
+function mouseLeave(e) {
+	isButtonDown = false;
+}
+
+function mouseMoved(e) {
+	if (isPenToolSelected) {
+		if (isButtonDown) {
+			context.lineTo(e.offsetX, e.offsetY);
+			context.stroke();
+		}
+	}
+}
+
+function mouseDown(e) {
+	isButtonDown = true;
+	if (isPenToolSelected) {
+		context.beginPath();
+		context.moveTo(e.offsetX, e.offsetY);
+		/* use e.layerX for other browsers */
+	}
+	if (isRectangleToolSelected) {
+		rectOrigin_X = e.offsetX;
+		rectOrigin_Y = e.offsetY;
+		rectToDraw = true;
+		helperCanvas.style.visibility = "visible";
+	}
+}
+
+function mouseUp(e) {
+	isButtonDown = false;
+
+}
+
+function helperCanvasMouseUp(e) {
+	if (isRectangleToolSelected) {
+		rectWidth = e.offsetX - rectOrigin_X;
+		rectHeight = e.offsetY - rectOrigin_Y;
+		helperCanvas.style.visibility = "hidden";
+		context.strokeRect(rectOrigin_X, rectOrigin_Y, rectWidth, rectHeight);
+	}
+}
+
+function helperCanvasMouseMove(e) {
+	helperContext.clearRect(0, 0, helperCanvas.width, helperCanvas.height);
+	helperContext.strokeRect(rectOrigin_X, rectOrigin_Y, e.offsetX - rectOrigin_X, e.offsetY - rectOrigin_Y);
+}

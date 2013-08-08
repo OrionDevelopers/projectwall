@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="jsxgraph.css">
+        <script src="jsxgraphcore.js" type="text/javascript"></script>
+       
+    </head>
+    <body>
+        <div id="box" class="jxgbox" style="width:500px; height:500px;"></div>
+       
+     <script>
+         board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox: [-5,5,5,-5], axis: true});
+ 
+           var getMouseCoords = function(e) {
+        var cPos = board.getCoordsTopLeftCorner(e),
+            absPos = JXG.getPosition(e),
+            dx = absPos[0]-cPos[0],
+            dy = absPos[1]-cPos[1];
+ 
+        return new JXG.Coords(JXG.COORDS_BY_SCREEN, [dx, dy], board);
+    },
+    up = function(e) {
+        var canCreate = true,
+            coords = getMouseCoords(e),
+            el;
+ 
+        for (el in board.objects) {
+            if(JXG.isPoint(board.objects[el]) && board.objects[el].hasPoint(coords.scrCoords[1], coords.scrCoords[2])) {
+                canCreate = false;
+                break;
+            }
+        }
+ 
+        if (canCreate) {
+            board.create('point', [coords.usrCoords[1], coords.usrCoords[2]]);
+        }
+    };
+    
+    board.on('up', up);
+        </script>
+    </body>
+</html>

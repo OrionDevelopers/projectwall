@@ -1,0 +1,36 @@
+*{
+	padding:0px;
+	margin:0px;
+}
+body,html{
+	height:100%;
+	width:100%;
+}
+#leftToolBar{
+	float:left;
+	height:100%;
+	width:10%;
+	background-color: gray;
+}
+#rightToolBar{
+	float:right;
+	height:100%;
+	width:10%;
+	background-color: gray;
+}
+#container{
+	height:100%;
+	width:75%;
+	
+	margin-left:auto;
+	margin-right:auto;
+	background-color:silver;
+}
+.myButton{
+	height:10%;
+	width:100%;
+	text-align: center;
+	text-height: 20px;
+	border:1px solid black;
+	background-color: #C0C0C0;
+}

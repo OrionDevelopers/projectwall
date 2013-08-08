@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Slide Presenter </title>
+		<link href="css/slidePresenter.css" rel="stylesheet"/>
+		<script src="js/kinetic-v4.4.1.js" type="text/javascript"></script>
+		<script src="js/slidePresenter.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id='leftToolBar'></div>
+		<div id='rightToolBar'></div>
+		<div id='container'></div>
+	</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+    <style>
+        #img1{
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            top: 400px;
+            left: 400px;
+            background-color: red;
+    
+            
+             -webkit-transition:top 3s ease-out;
+           
+            
+           
+        }
+        @-webkit-keyframes myfun{
+            
+            from{top:400px;}
+            to{top:100px;}
+        }
+        #div1{
+             
+            width: 200px;
+            height: 200px;
+             
+        }
+        #img2{
+            height: 100px;
+            width:100px;
+            visibility: hidden;
+        }
+    </style>
+    <script>
+        function change(){
+            var id=document.getElementById("img1");
+             var id2=document.getElementById("img2");
+             id2.style.visibility="visible";
+            alert(id.offsetTop);
+            //id.offsetTop="10px";
+            id.style.top="10px";
+            alert(id.offsetTop);
+            
+        }
+    </script>
+    <body>
+        <div>
+            <img id="img1" src="images/coordinate.png">
+            
+        </div>
+        <div id="div1">
+            
+        </div>
+         <img id="img2" src="images/coordinate.png">
+        <input type="submit" onclick="change();">
+    </body>
+    
+</html>

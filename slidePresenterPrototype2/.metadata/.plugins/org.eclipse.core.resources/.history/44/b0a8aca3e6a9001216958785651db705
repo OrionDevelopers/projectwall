@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Slide Presenter </title>
+		<link href="css/slidePresenter.css" rel="stylesheet"/>
+		<script src="js/kinetic-v4.4.1.js" type="text/javascript"></script>
+		<script src="js/slidePresenter.js" type="text/javascript"></script>
+	</head>
+	<body onload="init();">
+		<div id='leftToolBar'>
+			<div id='penToolButton' class='myButton'>Pen</div>
+			<div id='rectTooButton' class='myButton'>Rectangle</div>
+			<div id='filledRectToolButton' class='myButton'>Filled Rectangle</div>
+			<div id='highlighToolButton' class='myButton'></div>
+		</div>
+		<div id='rightToolBar'></div>
+		<div id='container'></div>
+	</body>
+</html>

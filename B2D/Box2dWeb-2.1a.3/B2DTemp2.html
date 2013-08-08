@@ -1,0 +1,657 @@
+
+<html>
+   <head>
+      <title>Box2dWeb Demo</title>
+      <link rel="stylesheet" type="text/css" href="bootstrap.css">
+      <link rel="stylesheet" type="text/css" href="B2DTemp2.css">
+   </head>
+   
+   
+   <script type="text/javascript" src="Box2dWeb-2.1.a.3.min.js"></script>
+   <script type="text/javascript">
+      
+      var isTouchSupported = 'ontouchstart' in window;
+      console.log(isTouchSupported);
+      var world;
+      var   b2Vec2 = Box2D.Common.Math.b2Vec2
+            ,  b2AABB = Box2D.Collision.b2AABB
+         	,	b2BodyDef = Box2D.Dynamics.b2BodyDef
+         	,	b2Body = Box2D.Dynamics.b2Body
+         	,	b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+         	,	b2Fixture = Box2D.Dynamics.b2Fixture
+         	,	b2World = Box2D.Dynamics.b2World
+         	,	b2MassData = Box2D.Collision.Shapes.b2MassData
+         	,	b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+         	,	b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+         	,	b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+            ,  b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
+            ;
+            
+      var bodyDef;
+      var fixDef;
+      var canvas;
+            
+      function init() {
+         
+         canvas = document.getElementById("canvas");
+         
+         world = new b2World(
+               new b2Vec2(0, 10)    //gravity
+            ,  true                 //allow sleep
+         );
+         
+         fixDef = new b2FixtureDef;
+         /*
+fixDef.density = 1.0;
+         fixDef.friction = 0.5;
+         fixDef.restitution = 0.8;
+*/
+         
+         bodyDef = new b2BodyDef;
+         
+         //create ground
+         bodyDef.type = b2Body.b2_staticBody;
+         fixDef.shape = new b2PolygonShape;
+         fixDef.shape.SetAsBox(20, 2);
+         bodyDef.position.Set(10, 500 / 30 + 1.8);  //Postition
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+         bodyDef.position.Set(10, -1.8);	//Postition
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+         fixDef.shape.SetAsBox(2, 14);
+         bodyDef.position.Set(-1.8, 13);	//Postition
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+         bodyDef.position.Set(28.4, 13);	//Postition
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+         
+         
+         //creatingTheWall
+         bodyDef.type = b2Body.b2_staticBody;
+         fixDef.shape = new b2PolygonShape;
+         fixDef.shape.SetAsBox(0.15,10);
+         bodyDef.position.x = 22;
+         bodyDef.position.y = 15;
+         
+         fixDef.density = 1.0;
+         fixDef.friction = 0.0;
+         fixDef.restitution = 0.8;
+
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+         
+         //create some objects
+         
+         // creatingSomeCustomObjects
+         /*
+         bodyDef.type = b2Body.b2_dynamicBody;
+         fixDef.shape = new b2PolygonShape;
+         fixDef.shape.SetAsBox(1,1);
+         bodyDef.position.x = 5;
+         bodyDef.position.y = 5;
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+*/
+
+		 // canRedefineTheFixturesHereAndInitilizeTheObjectAgain         
+/*
+         var fixDef = new b2FixtureDef;
+         fixDef.density = 1.0;
+         fixDef.friction = 0.5;
+         fixDef.restitution = 0.8;
+*/
+
+         
+         // creatingACircle
+         /*
+         bodyDef.type = b2Body.b2_dynamicBody;
+         fixDef.shape = new b2CircleShape(1);
+         bodyDef.position.x = 10;
+         bodyDef.position.y = 5;
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+*/
+         
+         
+         
+         /*
+bodyDef.type = b2Body.b2_dynamicBody;
+         for(var i = 0; i < 1; ++i) 
+         {
+            if(Math.random() > 0.5) 
+            {
+               fixDef.shape = new b2PolygonShape;
+               fixDef.shape.SetAsBox(
+                     Math.random() + 0.1 //half width
+                  ,  Math.random() + 0.1 //half height
+               );
+            } 
+            else 
+            {
+               fixDef.shape = new b2CircleShape
+               (
+                  Math.random() + 0.1 //radius
+               );
+            }
+            bodyDef.position.x = Math.random() * 10;
+            bodyDef.position.y = Math.random() * 10;
+            world.CreateBody(bodyDef).CreateFixture(fixDef);
+         }
+*/
+         
+         // creatingStaticObjects
+
+         
+         
+         //setup debug draw
+         var debugDraw = new b2DebugDraw();
+			debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+			debugDraw.SetDrawScale(30.0);
+			debugDraw.SetFillAlpha(0.5);
+			debugDraw.SetLineThickness(1.0);
+			debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+			world.SetDebugDraw(debugDraw);
+         
+         window.setInterval(update, 1000 / 60);
+         
+         //mouse
+         
+         var mouseX, mouseY, mousePVec, isMouseDown, selectedBody, mouseJoint;
+         var canvasPosition = getElementPosition(document.getElementById("canvas"));
+         
+         canvas.addEventListener(!isTouchSupported ? "mousedown":"touchstart", function(e) {
+            isMouseDown = true;
+            handleMouseMove(e);
+            canvas.addEventListener(!isTouchSupported ? "mousemove" :"touchmove", handleMouseMove, true);
+         }, true);
+         
+         canvas.addEventListener(!isTouchSupported ? "mouseup" : "touchend", function() {
+            canvas.removeEventListener(!isTouchSupported ? "mousemove" : "touchmove", handleMouseMove, true);
+            isMouseDown = false;
+            mouseX = undefined;
+            mouseY = undefined;
+         }, true);
+         
+         function handleMouseMove(e) {
+         e.preventDefault();
+         if(isTouchSupported)
+         	e = e.targetTouches[0];
+         	
+            mouseX = (e.clientX - canvasPosition.x) / 30;
+            mouseY = (e.clientY - canvasPosition.y) / 30;
+         };
+         
+         function getBodyAtMouse() {
+            mousePVec = new b2Vec2(mouseX, mouseY);
+            var aabb = new b2AABB();
+            aabb.lowerBound.Set(mouseX - 0.001, mouseY - 0.001);
+            aabb.upperBound.Set(mouseX + 0.001, mouseY + 0.001);
+            
+            //QueryTheWorldForOverlappingShapes
+
+            selectedBody = null;
+            world.QueryAABB(getBodyCB, aabb);
+            return selectedBody;
+         }
+
+         function getBodyCB(fixture) {
+            if(fixture.GetBody().GetType() != b2Body.b2_staticBody) {
+               if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), mousePVec)) {
+                  selectedBody = fixture.GetBody();
+                  return false;
+               }
+            }
+            return true;
+         }
+         
+         //update
+         
+         function update() {
+         
+            if(isMouseDown && (!mouseJoint)) {
+               var body = getBodyAtMouse();
+               if(body) {
+                  var md = new b2MouseJointDef();
+                  md.bodyA = world.GetGroundBody();
+                  md.bodyB = body;
+                  md.target.Set(mouseX, mouseY);
+                  md.collideConnected = true;
+                  md.maxForce = 300.0 * body.GetMass();
+                  mouseJoint = world.CreateJoint(md);
+                  body.SetAwake(true);
+               }
+            }
+            
+            if(mouseJoint) {
+               if(isMouseDown) {
+                  mouseJoint.SetTarget(new b2Vec2(mouseX, mouseY));
+               } else {
+                  world.DestroyJoint(mouseJoint);
+                  mouseJoint = null;
+               }
+            }
+         
+            world.Step(1 / 60, 10, 10);
+            world.DrawDebugData();
+            world.ClearForces();
+         };
+         
+         //helpers
+         
+         //http://js-tut.aardon.de/js-tut/tutorial/position.html
+         function getElementPosition(element) {
+            var elem=element, tagname="", x=0, y=0;
+           
+            while((typeof(elem) == "object") && (typeof(elem.tagName) != "undefined")) {
+               y += elem.offsetTop;
+               x += elem.offsetLeft;
+               tagname = elem.tagName.toUpperCase();
+
+               if(tagname == "BODY")
+                  elem=0;
+
+               if(typeof(elem) == "object") {
+                  if(typeof(elem.offsetParent) == "object")
+                     elem = elem.offsetParent;
+               }
+            }
+
+            return {x: x, y: y};
+         }
+
+
+      };
+   
+   function myFunc2(gravity) {
+			if (gravity.checked){
+			/* alert("Alert"); */
+				world.SetGravity(new b2Vec2(0,-10));
+			}
+			else {
+				world.SetGravity(new b2Vec2(0,10));
+			}
+		}
+		
+		function myFunc3(pause) {
+			if (pause.checked){
+			/* alert("Alert"); */
+				
+				world.SetGravity(new b2Vec2(0,0));
+			}
+			else {
+				world.SetGravity(new b2Vec2(0,10));
+			}
+		}
+		
+		function newCircle() {
+		var tempR = document.getElementById("radius").value;
+		console.log(tempR);
+		 bodyDef.type = b2Body.b2_dynamicBody;
+         fixDef.shape = new b2CircleShape(Number(tempR));
+         bodyDef.position.x = 24;
+         bodyDef.position.y = 13;
+         
+         fixDef.density = Number(document.getElementById("density").value);
+         fixDef.friction = Number(document.getElementById("friction").value);;
+         fixDef.restitution = Number(document.getElementById("restitution").value);;
+
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+		}
+
+
+		function newBox() {
+		 bodyDef.type = b2Body.b2_dynamicBody;
+         fixDef.shape = new b2PolygonShape;
+         fixDef.shape.SetAsBox(Number(document.getElementById("width").value),Number(document.getElementById("height").value));
+         bodyDef.position.x = 24;
+         bodyDef.position.y = 13;
+         
+         fixDef.density = Number(document.getElementById("density2").value);
+         fixDef.friction = Number(document.getElementById("friction2").value);;
+         fixDef.restitution = Number(document.getElementById("restitution2").value);;
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+		}
+		
+		function newInclined() {
+		var height = Number(document.getElementById("height2").value);
+		var base = Number(document.getElementById("base").value);
+		var vxs;
+		if (Number(document.getElementById("face").value) == 1)
+		{
+			vxs = [new b2Vec2(0,-height),new b2Vec2(0,1),new b2Vec2(-base,1)];
+		}
+		else
+		{
+			vxs = [new b2Vec2(0,-height),new b2Vec2(base,1),new b2Vec2(-0.0,1)]
+		}
+		bodyDef.type = b2Body.b2_dynamicBody;
+        fixDef.shape = new b2PolygonShape;
+		fixDef.shape.SetAsArray(vxs, vxs.length);
+		
+		fixDef.density = 0;
+        fixDef.friction = Number(document.getElementById("friction3").value);;
+        fixDef.restitution = Number(document.getElementById("restitution3").value);;
+
+		bodyDef.userData = "ramp";
+		bodyDef.position.Set(10, 5);
+//		bodyDef.setRotate = 180;
+		world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+		/*
+ bodyDef.type = b2Body.b2_dynamicBody;
+         fixDef.shape = new b2PolygonShape;
+         fixDef.shape.SetAsBox(1,1);
+         bodyDef.position.x = 5;
+         bodyDef.position.y = 5;
+         
+         fixDef.density = 1.0;
+         fixDef.friction = 0.5;
+         fixDef.restitution = 0.8;
+*/
+
+		}
+
+		function applyGravity() { 
+			if (Number(document.getElementById("gravity").value) == 1)
+			world.SetGravity(new b2Vec2(0,10));
+			else if (Number(document.getElementById("gravity").value) == 2)
+			world.SetGravity(new b2Vec2(0,-10));
+			else
+			world.SetGravity(new b2Vec2(0,0));
+		}
+		
+		function pause() {
+			this._paused = true;
+			window.clearTimeout(this._updateTimeout);
+			window.clearTimeout(this._updateFPSTimeout);
+			window.clearTimeout(this._updateUserInteractionTimout);
+	
+		}
+		
+		function isPaused() {
+			return this._paused;
+		}
+		
+   
+   </script>
+   
+   <script>
+   	
+   </script>
+   
+		
+   <body onload="init();">
+     <div id='container'> 
+      <div = id='gravityOption'>
+         <a href='../../index.php'><button class='btn  btn-primary'>Home</button></a></br></br>
+      <div>Gravity:</div>
+      <select id="gravity" onchange="applyGravity()">
+      <option name=1 value=1 selected> SeaLevel </option>
+      <option name=2 value=2> NegativeGravity </option>
+      <option name=3 value=3> ZeroGravity </option>
+            </select> 
+         </div>
+      
+          <canvas id="canvas" width="800" height="500" style="background-color:#FFF;"></canvas>
+   </div>
+      <div id='optionContainer'>
+         <div class='optionWrapper' id='inclinedOptions'>
+      <div class='option'>
+      Friction:
+      <select id="friction3">
+      <option name=0.1 value=0.1> 0.1 </option>
+      <option name=0.2 value=0.2> 0.2 </option>
+      <option name=0.3 value=0.3> 0.3 </option>
+      <option name=0.4 value=0.4> 0.4 </option>
+      <option name=0.5 value=0.5> 0.5 </option>
+      <option name=0.6 value=0.6> 0.6 </option>
+      <option name=0.7 value=0.7> 0.7 </option>
+      <option name=0.8 value=0.8> 0.8 </option>
+      <option name=0.9 value=0.9> 0.9 </option>
+      <option name=1.0 value=1.0 selected> 1.0 </option>
+      </select>
+   </div>
+      <div class='option'>
+      Restitution:
+      <select id="restitution3">
+      <option name=0.1 value=0.1 selected> 0.1 </option>
+      <option name=0.2 value=0.2> 0.2 </option>
+      <option name=0.3 value=0.3> 0.3 </option>
+      <option name=0.4 value=0.4> 0.4 </option>
+      <option name=0.5 value=0.5> 0.5 </option>
+      <option name=0.6 value=0.6> 0.6 </option>
+      <option name=0.7 value=0.7> 0.7 </option>
+      <option name=0.8 value=0.8> 0.8 </option>
+      <option name=0.9 value=0.9> 0.9 </option>
+      <option name=1.0 value=1.0> 1.0 </option>
+      </select>
+   </div>
+      <div class='option'>
+      Base:
+      <select id="base">
+      <option name=1.0 value=1.0> 0.0 </option>
+      <option name=1.2 value=1.2> 0.2 </option>
+      <option name=1.3 value=1.3> 0.3 </option>
+      <option name=1.4 value=1.4> 0.4 </option>
+      <option name=1.5 value=1.5> 0.5 </option>
+      <option name=1.6 value=1.6> 0.6 </option>
+      <option name=1.7 value=1.7> 0.7 </option>
+      <option name=1.8 value=1.8> 0.8 </option>
+      <option name=1.9 value=1.9> 0.9 </option>
+      <option name=2.0 value=2.0 selected> 1.0 </option>
+      <option name=2.1 value=2.1> 1.1 </option>
+      <option name=2.2 value=2.2> 1.2 </option>
+      <option name=2.3 value=2.3> 1.3 </option>
+      <option name=2.4 value=2.4> 1.4 </option>
+      <option name=2.5 value=2.5> 1.5 </option>
+      <option name=2.6 value=2.6> 1.6 </option>
+      <option name=2.7 value=2.7> 1.7 </option>
+      <option name=2.8 value=2.8> 1.8 </option>
+      <option name=2.9 value=2.9> 1.9 </option>
+      <option name=3.0 value=3.0> 2.0 </option>
+      </select>      
+   </div>
+      <div class='option'>
+      Height:
+      <select id="height2">
+      <option name=0.1 value=0.1> 0.1 </option>
+      <option name=0.2 value=0.2> 0.2 </option>
+      <option name=0.3 value=0.3> 0.3 </option>
+      <option name=0.4 value=0.4> 0.4 </option>
+      <option name=0.5 value=0.5> 0.5 </option>
+      <option name=0.6 value=0.6> 0.6 </option>
+      <option name=0.7 value=0.7> 0.7 </option>
+      <option name=0.8 value=0.8> 0.8 </option>
+      <option name=0.9 value=0.9> 0.9 </option>
+      <option name=1.0 value=1.0 selected> 1.0 </option>
+      <option name=1.1 value=1.1> 1.1 </option>
+      <option name=1.2 value=1.2> 1.2 </option>
+      <option name=1.3 value=1.3> 1.3 </option>
+      <option name=1.4 value=1.4> 1.4 </option>
+      <option name=1.5 value=1.5> 1.5 </option>
+      </select>
+      </div>
+      <div class='option'>
+      Face:
+      <select id="face">
+      <option name=1 value=1 selected> Left </option>
+      <option name=2 value=2> Right </option>
+      </select>
+   </div>
+      <div class='option'>
+      <button class="btn btn-primary" onClick="newInclined()">NewInclined</button>
+   </div>
+      </div>
+  	  
+      
+      <div class='optionWrapper' id='boxOptions'>
+      <div class='option'>
+      Density:
+      <select id="density2">
+      <option name=0.2 value=0.2> 0.2 </option>
+      <option name=0.4 value=0.4> 0.4 </option>
+      <option name=0.6 value=0.6 selected> 0.6 </option>
+      <option name=0.8 value=0.8> 0.8 </option>
+      <option name=1.0 value=1.0> 1.0 </option>
+      </select>
+   </div>
+      <div class='option'>
+      Friction:
+      <select id="friction2">
+      <option name=0.1 value=0.1> 0.1 </option>
+      <option name=0.2 value=0.2> 0.2 </option>
+      <option name=0.3 value=0.3> 0.3 </option>
+      <option name=0.4 value=0.4> 0.4 </option>
+      <option name=0.5 value=0.5> 0.5 </option>
+      <option name=0.6 value=0.6> 0.6 </option>
+      <option name=0.7 value=0.7> 0.7 </option>
+      <option name=0.8 value=0.8> 0.8 </option>
+      <option name=0.9 value=0.9> 0.9 </option>
+      <option name=1.0 value=1.0 selected> 1.0 </option>
+      </select>
+   </div>
+      <div class='option'>
+      Restitution:
+      <select id="restitution2">
+      <option name=0.1 value=0.1> 0.1 </option>
+      <option name=0.2 value=0.2> 0.2 </option>
+      <option name=0.3 value=0.3> 0.3 </option>
+      <option name=0.4 value=0.4> 0.4 </option>
+      <option name=0.5 value=0.5 selected> 0.5 </option>
+      <option name=0.6 value=0.6> 0.6 </option>
+      <option name=0.7 value=0.7> 0.7 </option>
+      <option name=0.8 value=0.8> 0.8 </option>
+      <option name=0.9 value=0.9> 0.9 </option>
+      <option name=1.0 value=1.0> 1.0 </option>      </select>
+   </div>
+      <div class='option'>
+      Height:
+      <select id="height">
+      <option name=0.1 value=0.1> 0.1 </option>
+      <option name=0.2 value=0.2> 0.2 </option>
+      <option name=0.3 value=0.3> 0.3 </option>
+      <option name=0.4 value=0.4> 0.4 </option>
+      <option name=0.5 value=0.5> 0.5 </option>
+      <option name=0.6 value=0.6> 0.6 </option>
+      <option name=0.7 value=0.7> 0.7 </option>
+      <option name=0.8 value=0.8> 0.8 </option>
+      <option name=0.9 value=0.9> 0.9 </option>
+      <option name=1.0 value=1.0 selected> 1.0 </option>
+      <option name=1.1 value=1.1> 1.1 </option>
+      <option name=1.2 value=1.2> 1.2 </option>
+      <option name=1.3 value=1.3> 1.3 </option>
+      <option name=1.4 value=1.4> 1.4 </option>
+      <option name=1.5 value=1.5> 1.5 </option>
+      <option name=1.6 value=1.6> 1.6 </option>
+      <option name=1.7 value=1.7> 1.7 </option>
+      <option name=1.8 value=1.8> 1.8 </option>
+      <option name=1.9 value=1.9> 1.9 </option>
+      </select>
+   </div>
+      <div class='option'>
+      Width:
+      <select id="width">
+      <option name=0.1 value=0.1> 0.1 </option>
+      <option name=0.2 value=0.2> 0.2 </option>
+      <option name=0.3 value=0.3> 0.3 </option>
+      <option name=0.4 value=0.4> 0.4 </option>
+      <option name=0.5 value=0.5> 0.5 </option>
+      <option name=0.6 value=0.6> 0.6 </option>
+      <option name=0.7 value=0.7> 0.7 </option>
+      <option name=0.8 value=0.8> 0.8 </option>
+      <option name=0.9 value=0.9> 0.9 </option>
+      <option name=1.0 value=1.0 selected> 1.0 </option>
+      <option name=1.1 value=1.1> 1.1 </option>
+      <option name=1.2 value=1.2> 1.2 </option>
+      <option name=1.3 value=1.3> 1.3 </option>
+      <option name=1.4 value=1.4> 1.4 </option>
+      <option name=1.5 value=1.5> 1.5 </option>
+      </select>
+   </div>
+      <div class='option'>
+      <button class="btn btn-primary" onclick="newBox()">NewBox</button>
+   </div>
+      </div>
+      <div class='optionWrapper' id='ballOptions'>
+      <div class='option'>
+      Radius:
+      <select id="radius">
+      <option name=0.2 value=0.2> 0.2 </option>
+      <option name=0.5 value=0.5> 0.5 </option>
+      <option name=0.8 value=0.8> 0.8 </option>
+      <option name=1.0 value=1.0 selected> 1.0 </option>
+      <option name=1.5 value=1.5> 1.5 </option>
+      <option name=2.0 value=2.0> 2.0 </option>
+      </select>
+      </div>
+      <div class='option'>
+      Density:
+      <select id="density">
+      <option name=0.2 value=0.2> 0.2 </option>
+      <option name=0.4 value=0.4> 0.4 </option>
+      <option name=0.6 value=0.6 selected> 0.6 </option>
+      <option name=0.8 value=0.8> 0.8 </option>
+      <option name=1.0 value=1.0> 1.0 </option>
+      </select>
+      </div>
+      <div class='option'>
+      Friction:
+      <select id="friction">
+      <option name=0.1 value=0.1> 0.1 </option>
+      <option name=0.2 value=0.2> 0.2 </option>
+      <option name=0.3 value=0.3> 0.3 </option>
+      <option name=0.4 value=0.4> 0.4 </option>
+      <option name=0.5 value=0.5> 0.5 </option>
+      <option name=0.6 value=0.6> 0.6 </option>
+      <option name=0.7 value=0.7> 0.7 </option>
+      <option name=0.8 value=0.8> 0.8 </option>
+      <option name=0.9 value=0.9> 0.9 </option>
+      <option name=1.0 value=1.0 selected> 1.0 </option>
+      </select>
+      </div>
+      <div class='option'>
+      Restitution:
+      <select id="restitution">
+      <option name=0.1 value=0.1> 0.1 </option>
+      <option name=0.2 value=0.2> 0.2 </option>
+      <option name=0.3 value=0.3> 0.3 </option>
+      <option name=0.4 value=0.4> 0.4 </option>
+      <option name=0.5 value=0.5 selected> 0.5 </option>
+      <option name=0.6 value=0.6> 0.6 </option>
+      <option name=0.7 value=0.7> 0.7 </option>
+      <option name=0.8 value=0.8> 0.8 </option>
+      <option name=0.9 value=0.9> 0.9 </option>
+      <option name=1.0 value=1.0> 1.0 </option>      </select>
+      </div>
+      <div class='option'></div>
+      <div class='option'>
+        <button class="btn btn-primary" onclick="newCircle()">NewBall</button>
+      </div>
+
+      </div>
+      
+     
+     
+      
+      
+   </div>
+    
+     <!--  <button onClick="applyGravity()">ApplyGravity</button> -->
+      
+      
+      <!--
+<input type = "checkbox"
+                 id = "gravity"
+                 name = "gravity"
+                 value = "gravity"
+                 onchange= "myFunc2(this)" />
+             <label for = "gravity">GravitySwitch</label>
+       
+      <input type = "checkbox"
+                 id = "pause"
+                 name = "pause"
+                 value = "pause"
+                 onchange= "myFunc3(this)" />
+             <label for = "pause">ZeroGravity</label>
+-->
+
+   </body>
+   
+</html>
